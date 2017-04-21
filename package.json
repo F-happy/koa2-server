@@ -1,0 +1,23 @@
+{
+  "name": "app-server",
+  "version": "0.1.0",
+  "description": "项目后端服务框架",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "NODE_ENV=test node bin/start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@115.28.89.249:308/app-server.git"
+  },
+  "author": "jonnyf",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-cors": "0.0.16",
+    "koa-router": "^7.1.1",
+    "log4js": "^1.1.1"
+  }
+}
