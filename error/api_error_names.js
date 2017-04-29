@@ -6,31 +6,33 @@ let ApiErrorNames = {};
 
 ApiErrorNames.UNKNOW_ERROR = "unknowError";
 ApiErrorNames.USER_NOT_EXIST = "userNotExist";
+ApiErrorNames.USER_HAS_EXIST = "userHasExist";
+ApiErrorNames.USER_HAS_NOT = "userHasNot";
 
 /**
  * API错误名称对应的错误信息
  */
-const error_map = new Map();
+const errorMap = new Map();
 
-error_map.set(ApiErrorNames.UNKNOW_ERROR, {code: -1, message: '未知错误'});
-error_map.set(ApiErrorNames.USER_NOT_EXIST, {code: 101, message: '用户不存在'});
+errorMap.set(ApiErrorNames.UNKNOW_ERROR, {code: -1, message: '未知错误'});
+errorMap.set(ApiErrorNames.USER_NOT_EXIST, {code: 101, message: '用户未登录'});
+errorMap.set(ApiErrorNames.USER_HAS_EXIST, {code: 101, message: '用户未登录'});
+errorMap.set(ApiErrorNames.USER_HAS_NOT, {code: 103, message: '用户不存在'});
 
 //根据错误名称获取错误信息
-ApiErrorNames.getErrorInfo = (error_name) => {
+ApiErrorNames.getErrorInfo = (errorName = ApiErrorNames.UNKNOW_ERROR) => {
 
-    let error_info;
-
-    if (error_name) {
-        error_info = error_map.get(error_name);
-    }
+    let errorInfo;
+    errorInfo = errorMap.get(errorName);
 
     //如果没有对应的错误信息，默认'未知错误'
-    if (!error_info) {
-        error_name = ApiErrorNames.UNKNOW_ERROR;
-        error_info = error_map.get(error_name);
+    if (!errorInfo) {
+        errorName = ApiErrorNames.UNKNOW_ERROR;
+        errorInfo = errorMap.get(errorName);
     }
 
-    return error_info;
+    return errorInfo;
 };
 
 module.exports = ApiErrorNames;
+module.exports.errorMap = errorMap;

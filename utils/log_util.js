@@ -3,10 +3,10 @@
  */
 const log4js = require('log4js');
 
-const log_config = require('../config/log_config');
+const logConfig = require('../config/log_config');
 
 //加载配置文件
-log4js.configure(log_config);
+log4js.configure(logConfig);
 
 let logUtil = {};
 
@@ -14,21 +14,21 @@ let errorLogger = log4js.getLogger('errorLogger');
 let resLogger = log4js.getLogger('resLogger');
 
 //封装错误日志
-logUtil.logError = function (ctx, error, resTime) {
+logUtil.logError = (ctx, error, resTime) => {
     if (ctx && error) {
         errorLogger.error(formatError(ctx, error, resTime));
     }
 };
 
 //封装响应日志
-logUtil.logResponse = function (ctx, resTime) {
+logUtil.logResponse = (ctx, resTime) => {
     if (ctx) {
         resLogger.info(formatRes(ctx, resTime));
     }
 };
 
 //格式化响应日志
-const formatRes = function (ctx, resTime) {
+const formatRes = (ctx, resTime) => {
     let logText = '';
 
     //响应日志开始
@@ -47,11 +47,10 @@ const formatRes = function (ctx, resTime) {
     logText += "*************** response log end ***************" + "\n";
 
     return logText;
-
 };
 
 //格式化错误日志
-const formatError = function (ctx, err, resTime) {
+const formatError = (ctx, err, resTime) => {
     let logText = '';
 
     //错误信息开始
@@ -74,7 +73,7 @@ const formatError = function (ctx, err, resTime) {
 };
 
 //格式化请求日志
-const formatReqLog = function (req, resTime) {
+const formatReqLog = (req, resTime) => {
 
     let logText = '';
 

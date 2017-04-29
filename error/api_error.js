@@ -7,13 +7,13 @@ const ApiErrorNames = require('./api_error_names');
 class ApiError extends Error {
 
     //构造方法
-    constructor(error_name, error_code, error_message) {
+    constructor(errorName, errorCode, errorMessage) {
         super();
-        let error_info = ApiErrorNames.getErrorInfo(error_name);
+        let errorInfo = ApiErrorNames.getErrorInfo(errorName);
 
-        this.name = error_name;
-        this.code = error_info.code;
-        this.message = error_info.message;
+        this.name = errorName;
+        this.code = errorInfo.code;
+        this.message = errorInfo.message;
     }
 }
 

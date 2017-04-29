@@ -4,20 +4,32 @@
   "description": "项目后端服务框架",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=test node bin/start"
+    "dev": "NODE_ENV=dev node-dev --no-notify bin/start",
+    "start": "NODE_ENV=prod node bin/start",
+    "test": "NODE_ENV=test node bin/start"
   },
+  "serverKey": "youKey",
   "repository": {
     "type": "git",
-    "url": "git@115.28.89.249:308/app-server.git"
+    "url": "git@github.com:F-happy/koa2-server.git"
   },
   "author": "jonnyf",
   "license": "MIT",
   "dependencies": {
+    "crypto": "0.0.3",
+    "jsonwebtoken": "^7.4.0",
     "koa": "^2.2.0",
     "koa-bodyparser": "^4.2.0",
+    "koa-convert": "^1.2.0",
     "koa-cors": "0.0.16",
     "koa-router": "^7.1.1",
-    "log4js": "^1.1.1"
+    "log4js": "^1.1.1",
+    "moment": "^2.18.1",
+    "mysql": "^2.13.0",
+    "redis": "^2.7.1",
+    "uuid": "^3.0.1"
+  },
+  "devDependencies": {
+    "node-dev": "^3.1.3"
   }
 }
