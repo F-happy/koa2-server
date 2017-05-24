@@ -6,33 +6,30 @@
  */
 "use strict";
 const http = require('http');
+const url = require('url');
 let clientCache = {};
 
 class NutsJsonRPCClient {
-    constructor(url, port = 8080) {
-        this.url = url;
+    constructor(host, port = 80) {
+        const urlInfo = url.parse(host);
+        this.host = urlInfo.host;
         this.port = port;
-    }
-
-    test() {
-        console.log('rpc-test');
+        this.path = urlInfo.path || '/';
     }
 
     async call(method, params) {
-        return 'hello';
+        return await this.request(this.analyzeParams(method, params));
     }
 
     analyzeParams(method, params, notify = false) {
         let requestJSON = {
-            "jsonrpc": "2.0",
-            "method": method,
-            "params": params
+            'jsonrpc': '2.0',
+            'method': method,
+            'params': params
         };
-
         if (!notify) {
-            requestJSON["id"] = `nuts_json_rpc_${Math.round(100 * Math.random())}`;
+            requestJSON['id'] = `nuts_json_rpc_${Math.round(100 * Math.random())}`;
         }
-
         return JSON.stringify(requestJSON);
     }
 
@@ -40,40 +37,53 @@ class NutsJsonRPCClient {
         return new Promise((resolve, reject) => {
             let buffer = '';
             let options = {
-                host: this.url,
+                host: this.host,
                 port: this.port,
-                path: '/',
+                path: this.path,
                 headers: {
-                    'host': this.url,
+                    'Host': this.host,
+                    // 'Connection': 'keep-alive',
+                    // 'Transfer-Encoding': 'chunked',
+                    'Content-Type': 'application/json; charset=UTF-8',
                     'Content-Length': requestJSON.length
                 },
                 method: 'POST'
             };
-            http.request(options, (res) => {
-                res.on('data', (chunk) => {
+            const request = http.request(options);
+            request.on('response', (response) => {
+                response.on('data', (chunk) => {
                     buffer += chunk;
                 });
-                res.on('end', () => {
-                    let decoded = JSON.parse(buffer);
-                    if (decoded.hasOwnProperty('result')) {
-                        resolve(decoded.result);
+                response.on('end', () => {
+                    if (response.statusCode === 200) {
+                        let decoded = JSON.parse(buffer);
+                        if (decoded.hasOwnProperty('result')) {
+                            resolve(decoded.result);
+                        } else {
+                            reject(decoded.error);
+                        }
                     } else {
-                        reject(decoded.error);
+                        reject('request error code: ' + response.statusCode);
                     }
                 });
-                res.on('error', (err) => {
+                response.on('error', (err) => {
                     reject(err);
                 });
-            }).write(requestJSON).end();
+            });
+            request.on('error', (err) => {
+                reject(err);
+            });
+            request.write(requestJSON);
+            request.end();
         });
     }
 }
 
 module.exports = {
-    createClient: (url, port) => {
-        if (!clientCache[url]) {
-            clientCache[url] = new NutsJsonRPCClient(url, port);
+    createClient: (host, port) => {
+        if (!clientCache[host]) {
+            clientCache[host] = new NutsJsonRPCClient(host, port);
         }
-        return clientCache[url];
+        return clientCache[host];
     }
 };
